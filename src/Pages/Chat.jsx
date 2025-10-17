@@ -32,11 +32,7 @@ const Chat = () => {
   // const missing = candidate.missingFields;
   const [open, setOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-
-  const handleSubmit = () => {
-
-
-  };
+    const handleSubmit = () => {};
 
   const handleResumeUpload = async (file) => {
     console.log("Uploaded file:", file);
@@ -45,7 +41,8 @@ const Chat = () => {
       // Email regex pattern
       const emailPattern = /[\w.-]+@[\w.-]+\.\w+/g;
       // Phone regex pattern (handles various formats)
-      const phonePattern = /(?:\+?\d{1,3}[-.]?)?\(?\d{3}\)?[-.]?\d{3}[-.]?\d{4}/g;
+      const phonePattern =
+        /(?:\+?\d{1,3}[-.]?)?\(?\d{3}\)?[-.]?\d{3}[-.]?\d{4}/g;
       // Name pattern (looks for 2-3 consecutive capitalized words)
       const namePattern = /\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2}\b/;
 
@@ -54,71 +51,85 @@ const Chat = () => {
       const names = text.match(namePattern) || [];
 
       return {
-        email: emails[0] || '',
-        phone: phones[0] || '',
-        name: names[0] || ''
+        email: emails[0] || "",
+        phone: phones[0] || "",
+        name: names[0] || "",
       };
     };
 
     const validateInfo = (info) => {
       const missing = [];
-      if (!info.name) missing.push('name');
-      if (!info.email) missing.push('email');
-      if (!info.phone) missing.push('phone');
+      if (!info.name) missing.push("name");
+      if (!info.email) missing.push("email");
+      if (!info.phone) missing.push("phone");
       return missing;
     };
 
     try {
-      let text = '';
+      let text = "";
       let attempts = 0;
       const maxAttempts = 3;
-      if (file.type === 'application/pdf') {
+      if (file.type === "application/pdf") {
         const arrayBuffer = await file.arrayBuffer();
-        console.log("Array buffer obtained from PDF file.", arrayBuffer);
+        // console.log("Array buffer obtained from PDF file.", arrayBuffer);
         const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-        console.log("PDF document loaded.", pdf);
+        // console.log("PDF document loaded.", pdf);
         const page = await pdf.getPage(1);
-        console.log("PDF page retrieved.", page);
+        // console.log("PDF page retrieved.", page);
         const content = await page.getTextContent();
-        console.log("Text content extracted from PDF page.", content);
-        text = content.items.map(items => items.str).join(' ');
-        console.log("Extracted text from PDF:", text);
-      } else if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        // console.log("Text content extracted from PDF page.", content);
+        text = content.items.map((items) => items.str).join(" ");
+        // console.log("Extracted text from PDF:", text);
+      } else if (
+        file.type ===
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      ) {
         const arrayBuffer = await file.arrayBuffer();
         const result = await mammoth.extractRawText({ arrayBuffer });
         text = result.value;
       } else {
-        message.error('Please upload a PDF or DOCX file');
+        message.error("Please upload a PDF or DOCX file");
         return false;
       }
 
       while (attempts < maxAttempts) {
-        console.log(`Attempt ${attempts + 1} to extract information.`);
+        // console.log(`Attempt ${attempts + 1} to extract information.`);
         const info = await extractInfo(text);
-        console.log(info);
+        // console.log("info", info);
         const missingFields = validateInfo(info);
-        console.log(missingFields);
+        // console.log("missing field", missingFields.length);
 
         if (missingFields.length === 0) {
-          dispatch(updateCandidateField({ field: 'name', value: info.name }));
-          dispatch(updateCandidateField({ field: 'email', value: info.email }));
-          dispatch(updateCandidateField({ field: 'phone', value: info.phone }));
-          dispatch(updateResume(text));addBotMessage
-          dispatch(addBotMessage('Resume parsed successfully! Starting your interview...'));
+          dispatch(updateCandidateField({ field: "name", value: info.name }));
+          dispatch(updateCandidateField({ field: "email", value: info.email }));
+          dispatch(updateCandidateField({ field: "phone", value: info.phone }));
+          dispatch(updateResume(text));
+          dispatch(
+            addBotMessage(
+              "Resume parsed successfully! Starting your interview..."
+            )
+          );
           return true;
         }
         attempts++;
       }
 
-      const missingFields = validateInfo(await extractInfo(text));
       dispatch(updateResume(text));
-      dispatch(addBotMessage(`Could not extract all information. Missing fields: ${missingFields.join(', ')}. Please provide them.`));
-      message.warning('Could not extract all information from the resume. Please provide missing details.');
+      dispatch(
+        addBotMessage(
+          `Could not extract all information. Missing fields: ${missingFields.join(
+            ", "
+          )}. Please provide them.`
+        )
+      );
+      message.warning(
+        "Could not extract all information from the resume. Please provide missing details."
+      );
       return false;
     } catch (error) {
-      message.error('Error processing resume. Please try again.');
+      message.error("Error processing resume. Please try again.");
       return false;
-    }    
+    }
   };
 
   useEffect(() => {
@@ -169,6 +180,25 @@ const Chat = () => {
         <p>Card content</p>
         <p>Card content</p>
       </Card> */}
+
+        <div className="w-[55%] h-full mx-auto flex justify-start items-end">
+          <Card
+            title="Is this your information?"
+            variant="borderless"
+            style={{ width: 300 }}
+            className="border-gray-200 shadow-xl"
+          >
+            <p>
+              <b>Name:</b> {candidate.name || "Not provided"}
+            </p>
+            <p>
+              <b>Email:</b> {candidate.email || "Not provided"}
+            </p>
+            <p>
+              <b>Phone:</b> {candidate.phone || "Not provided"}
+            </p>
+          </Card>
+        </div>
 
         <div className="w-[60%] h-[6%] mx-auto bg-white rounded-full my-10 border border-gray-200 shadow-lg flex justify-end items-center ">
           <input

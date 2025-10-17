@@ -60,6 +60,7 @@ const Chat = () => {
       };
     };
 
+    
     const validateInfo = (info) => {
       const missing = [];
       if (!info.name) missing.push('name');

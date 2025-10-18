@@ -3,15 +3,14 @@ import { getAuth, setPersistence } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCCx9Tn3HKltQJD_HtsqFettAvibkhIOvI",
-  authDomain: "crisp-aa9c5.firebaseapp.com",
-  databaseURL:
-    "https://crisp-aa9c5-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "crisp-aa9c5",
-  storageBucket: "crisp-aa9c5.appspot.com",
-  messagingSenderId: "319780463503",
-  appId: "1:319780463503:web:943986b891df0f7e8ce1fa",
-  measurementId: "G-VBDTV2BMDN",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = initializeApp(firebaseConfig);

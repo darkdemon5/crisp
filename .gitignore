@@ -1,4 +1,10 @@
-# Logs
+# --- Node / Build ---
+node_modules
+dist
+dist-ssr
+*.local
+
+# --- Logs ---
 logs
 *.log
 npm-debug.log*
@@ -7,12 +13,24 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# --- Environment Files ---
+.env
+.env.local
+.env.*.local
+firebaseApi.env
 
-# Editor directories and files
+# --- Firebase / Credentials (if any) ---
+# Sometimes firebase auto-generates service files
+.firebase/
+firebase-debug.log
+firebase.json
+.firebaserc
+
+# --- Vite Cache ---
+.vite
+.cache
+
+# --- IDE / OS files ---
 .vscode/*
 !.vscode/extensions.json
 .idea

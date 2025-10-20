@@ -32,12 +32,13 @@ const Chat = () => {
   // const missing = candidate.missingFields;
   const [open, setOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-    const handleSubmit = () => {};
+  const handleSubmit = () => {};
 
   const handleResumeUpload = async (file) => {
-    console.log("Uploaded file:", file);
+    // console.log("Uploaded file:", file);
+    let missingFields;
     const extractInfo = async (text) => {
-      console.log("Extracting info from text:", text);
+      // console.log("Extracting info from text:", text);
       // Email regex pattern
       const emailPattern = /[\w.-]+@[\w.-]+\.\w+/g;
       // Phone regex pattern (handles various formats)
@@ -57,7 +58,6 @@ const Chat = () => {
       };
     };
 
-    
     const validateInfo = (info) => {
       const missing = [];
       if (!info.name) missing.push("name");
@@ -97,38 +97,63 @@ const Chat = () => {
         // console.log(`Attempt ${attempts + 1} to extract information.`);
         const info = await extractInfo(text);
         // console.log("info", info);
-        const missingFields = validateInfo(info);
-        // console.log("missing field", missingFields.length);
+        missingFields = validateInfo(info);
+        console.log("missing field", missingFields.length === 0);
 
         if (missingFields.length === 0) {
           dispatch(updateCandidateField({ field: "name", value: info.name }));
+          console.log("name", info.name);
           dispatch(updateCandidateField({ field: "email", value: info.email }));
+          console.log("email", info.email);
           dispatch(updateCandidateField({ field: "phone", value: info.phone }));
-          dispatch(updateResume(text));
+          console.log("phone", info.phone);
+          dispatch(
+            updateResume({
+              parsedFields: {
+                name: info.name || "",
+                email: info.email || "",
+                phone: info.phone || "",
+              },
+              text, // optional: include resume text if you need it
+            })
+          );
           dispatch(
             addBotMessage(
               "Resume parsed successfully! Starting your interview..."
             )
           );
+          message.success("Resume parsed successfully!");
           return true;
         }
         attempts++;
       }
 
-      dispatch(updateResume(text));
-      dispatch(
-        addBotMessage(
-          `Could not extract all information. Missing fields: ${missingFields.join(
-            ", "
-          )}. Please provide them.`
-        )
-      );
-      message.warning(
-        "Could not extract all information from the resume. Please provide missing details."
-      );
-      return false;
+      if (missingFields.length > 0) {
+                dispatch(
+          updateResume({
+            parsedFields: {
+                name: info.name || "",
+                email: info.email || "",
+                phone: info.phone || "",
+              },
+            text,
+          })
+        );
+        dispatch(
+          addBotMessage(
+            `Could not extract all information. Missing fields: ${missingFields.join(
+              ", "
+            )}. Please provide them.`
+          )
+        );
+        message.warning(
+          "Could not extract all information from the resume. Please provide missing details."
+        );
+        return false;
+      }
     } catch (error) {
-      message.error("Error processing resume. Please try again.");
+      console.log("Error processing resume:", error);
+      message.error("Error processing resume. Please try again.", error);
       return false;
     }
   };

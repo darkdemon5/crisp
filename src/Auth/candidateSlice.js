@@ -17,7 +17,7 @@ const candidateSlice = createSlice({
   initialState,
   reducers: {
     updateResume: (state, action) => {
-      const { parsedFields } = action.payload;
+      const parsedFields = action.payload?.parsedFields || action.payload || {};
       state.name = parsedFields.name || state.name;
       state.email = parsedFields.email || state.email;
       state.phone = parsedFields.phone || state.phone;

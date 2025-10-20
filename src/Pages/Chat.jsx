@@ -31,6 +31,7 @@ const Chat = () => {
   const [input, setInput] = useState("");
   // const missing = candidate.missingFields;
   const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const handleSubmit = () => {};
 
@@ -195,6 +196,50 @@ const Chat = () => {
         </p>
       </Modal>
 
+      <Modal
+        open={openEdit}
+        onCancel={() => setOpenEdit(false)}
+        footer={null}
+      >
+        <div className="flex flex-col gap-4">
+          <h2 className="text-xl font-semibold mb-4">Edit Your Information</h2>
+          <input
+            type="text"
+            defaultValue={candidate.name}
+            placeholder="Name"
+            className="w-full p-2 border border-gray-300 rounded"
+            onBlur={(e) =>
+              dispatch(updateCandidateField({ field: "name", value: e.target.value }))
+            }
+          />
+          <input
+            type="email"
+            defaultValue={candidate.email}
+            placeholder="Email"
+            className="w-full p-2 border border-gray-300 rounded"
+            onBlur={(e) =>
+              dispatch(updateCandidateField({ field: "email", value: e.target.value }))
+            }
+          />
+          <input
+            type="tel"
+            defaultValue={candidate.phone}
+            placeholder="Phone"
+            className="w-full p-2 border border-gray-300 rounded"
+            onBlur={(e) =>
+              dispatch(updateCandidateField({ field: "phone", value: e.target.value }))
+            }
+          />
+          <Button
+            type="primary"
+            onClick={() => setOpenEdit(false)}
+            className="mt-4"
+          >
+            Save
+          </Button>
+        </div>
+      </Modal>      
+
       <div className="w-[80%] h-full overflow-y-auto mx-auto flex flex-col justify-end ">
         {/* <Button type="primary" className="bg-[#1677ff]">Upload Resume</Button> */}
         {/* <button className="m-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
@@ -222,6 +267,10 @@ const Chat = () => {
             </p>
             <p>
               <b>Phone:</b> {candidate.phone || "Not provided"}
+            </p>
+            <p className="w-full flex justify-between mt-4"> 
+              <Button variant="filled" color="default" onClick={() => setOpenEdit(false)} size="large" style={{width: '40%' }}>Yes</Button>
+              <Button variant="filled" color="default" onClick={() => setOpenEdit(true)} size="large" style={{width: '40%' }}>No</Button>
             </p>
           </Card>
         </div>

@@ -153,7 +153,7 @@ const Chat = () => {
       }
     } catch (error) {
       console.log("Error processing resume:", error);
-      message.error("Error processing resume. Please try again.", error);
+      message.error("Error processing resume. Please try again.");
       return false;
     }
   };

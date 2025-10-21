@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use } from "react";
 import { Button, Checkbox, Form, Input, message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,19 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+
+  const checkLogin = useSelector((state) => state.auth.isAuth);
+  const isRole = useSelector((state) => state.auth.role);
+
+  React.useEffect(() => {
+    if(checkLogin){
+      if(isRole === "admin"){
+        navigate("/dashboard");
+      } else {
+        navigate("/chat");
+      }
+    }
+  }, [checkLogin, isRole, navigate]);
 
   const handleLogin = async (val) => {
     val.preventDefault();
@@ -27,16 +40,16 @@ const Login = () => {
       message.success("Logged in successfully");  
       // alert("Logged in successfully");
       dispatch(loginSuccess({ email, password, role }));
-      if (role === "admin") {
-        console.log(role);
+      if (role === "admin") {        
         navigate("/dashboard");
       } else {
         navigate("/chat");
       }
     } catch (error) {
+      message.error(error.message);
       dispatch(setError(error.message));
       // alert(error.message);
-      message.error(error.message);
+      
     }
     dispatch(setLoading(false));
   };

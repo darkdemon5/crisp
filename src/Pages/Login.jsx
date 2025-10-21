@@ -16,8 +16,8 @@ const Login = () => {
   const isRole = useSelector((state) => state.auth.role);
 
   React.useEffect(() => {
-    if(checkLogin){
-      if(isRole === "admin"){
+    if (checkLogin) {
+      if (isRole === "admin") {
         navigate("/dashboard");
       } else {
         navigate("/chat");
@@ -37,10 +37,10 @@ const Login = () => {
       );
       const user = userCredential.user;
       const role = user.email === "admin@crisp.com" ? "admin" : "user";
-      message.success("Logged in successfully");  
+      message.success("Logged in successfully");
       // alert("Logged in successfully");
-      dispatch(loginSuccess({ email, password, role }));
-      if (role === "admin") {        
+      dispatch(loginSuccess({ uid: user.uid, email: user.email, role }));
+      if (role === "admin") {
         navigate("/dashboard");
       } else {
         navigate("/chat");
@@ -49,7 +49,6 @@ const Login = () => {
       message.error(error.message);
       dispatch(setError(error.message));
       // alert(error.message);
-      
     }
     dispatch(setLoading(false));
   };

@@ -54,7 +54,7 @@ const SignUp = () => {
         user: email,
         role: "user",
       });
-      dispatch(signUpSuccess({ fullname, email, password, confirmpassword }));
+      dispatch(signUpSuccess({ fullname, email, uid: userid, role: "user",createdAt: Date.now(),}));
       navigate("/chat");
     } catch (error) {
       dispatch(setError(error.message));
